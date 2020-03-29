@@ -1,0 +1,6 @@
+# Browsers that we support
+# Run 'npx browserslist' in your project directory to see project’s target browsers.
+
+> 1%
+last 2 version
+not ie <= 9
