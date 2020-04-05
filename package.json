@@ -1,7 +1,7 @@
 {
-  "name": "vue-webpack-tempalte",
+  "name": "webpack-vue-template",
   "version": "1.0.0",
-  "description": "用于你或者你的团队快速开始的vue+webpack脚手架",
+  "description": "用于你或者你的团队快速开始的webpack-vue-frame脚手架",
   "main": "index.js",
   "scripts": {
     "serve": "cross-env NODE_ENV=development webpack-dev-server --progress",
@@ -18,7 +18,8 @@
   },
   "keywords": [
     "vue template",
-    "webpack template"
+    "webpack template",
+    "webpack frame"
   ],
   "author": "frogo",
   "license": "Unlicense",
