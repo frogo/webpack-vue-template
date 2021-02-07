@@ -1,12 +1,48 @@
-# EditorConfig is awesome: https://EditorConfig.org
-
-# top-most EditorConfig file
-root = true
-
 [*]
-charset = utf-8
-indent_style = space
-indent_size = 2
-end_of_line = lf
-insert_final_newline = true
-max_line_length = off
+charset=utf-8
+end_of_line=crlf
+trim_trailing_whitespace=true
+insert_final_newline=true
+indent_style=space
+indent_size=4
+
+[{haixi,.babelrc,.stylelintrc,jest.config,.eslintrc,.prettierrc,*.json,*.jsb3,*.jsb2,*.bowerrc}]
+indent_style=space
+indent_size=2
+
+[*.sass]
+indent_style=space
+indent_size=2
+
+[*.scss]
+indent_style=space
+indent_size=2
+
+[{*.js,*.cjs}]
+indent_style=space
+indent_size=2
+
+[{*.es6,*.mjs}]
+indent_style=space
+indent_size=2
+
+[*.jsx]
+indent_style=space
+indent_size=2
+
+[{jshint.json,*.jshintrc}]
+indent_style=space
+indent_size=2
+
+[{tsconfig.app.json,tsconfig.e2e.json,tsconfig.json,tsconfig.lib.json,tsconfig.spec.json}]
+indent_style=space
+indent_size=2
+
+[*.js.map]
+indent_style=space
+indent_size=2
+
+[{.analysis_options,*.yml,*.yaml}]
+indent_style=space
+indent_size=2
+

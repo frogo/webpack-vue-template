@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 const router = new VueRouter({
-  // mode: 'history',
+  mode: ROUTER_MODE, // eslint-disable-line
+  base: ROUTER_BASE, // eslint-disable-line
   routes: [
     {
       path: '/',

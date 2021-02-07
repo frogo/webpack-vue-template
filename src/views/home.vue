@@ -1,7 +1,11 @@
 <template lang="html">
   <div class="home">
     <h2>这是主页</h2>
-    <p>一些开发约定<router-link to="convention">请点击</router-link></p>
+    <p>
+      一些开发约定<router-link to="convention">
+        请点击
+      </router-link>
+    </p>
   </div>
 </template>
 <script>

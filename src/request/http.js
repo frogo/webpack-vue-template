@@ -50,9 +50,8 @@ axios.interceptors.response.use(function (response) {
 
 // 通用方法
 export const POST = (url, params) => {
-  const getTimestamp = new Date().getTime()
   return new Promise((resolve, reject) => {
-    axios.post(`${url}?timer=${getTimestamp}`, params)
+    axios.post(url, params)
       .then(res => {
         resolve(res.data)
       }).catch(err => {
@@ -62,9 +61,8 @@ export const POST = (url, params) => {
 }
 
 export const GET = (url, params) => {
-  const getTimestamp = new Date().getTime()
   return new Promise((resolve, reject) => {
-    axios.get(`${url}?timer=${getTimestamp}`, { params: params })
+    axios.get(url, { params: params })
       .then(res => {
         resolve(res.data)
       }).catch(err => {

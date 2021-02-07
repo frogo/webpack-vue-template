@@ -1,5 +1,5 @@
 const path = require('path')
-const version = process.env.npm_package_version
+const webpack = require('webpack')
 const openInEditor = require('launch-editor-middleware')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -9,7 +9,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 // Production 生产环境从node.js环境获取
 const prod = process.env.NODE_ENV === 'production'
-
+// 动态全局变量
+const APP_CONTEXT = process.env.npm_package_name // app的上下文关键字，我们这里用package.json的name
+const ROUTER_MODE = process.env.ROUTER_MODE || 'hash' // 路由模式,通过package.json的编译命令设置
+const ROUTER_BASE = prod ? '/' + APP_CONTEXT + '-web/' : '/' // 应用的基础路径 取决于单页应用服务的目录 例如，如果整个单页应用服务部署在 /app/ 下，然后 base 就应该设为 "/app/"
+const UMD_BASE = prod ? '/' + APP_CONTEXT + '-web/' : '' // 放在public/index.html，请求静态资源的
 module.exports = {
   // Entry package
   // 你可以理解为webpack开始加工你的项目的入口
@@ -32,7 +36,7 @@ module.exports = {
     // Package path 打包的目录
     path: path.resolve(__dirname, 'dist'),
     // Server access address 比如js,css,图片的路径，如果在服务器上部署不是根目录，需要写上文件夹名
-    publicPath: prod ? '' : '',
+    publicPath: ROUTER_BASE,
     // Scripts file name
     filename: prod ? 'scripts/[chunkhash].js' : '[name].js?[hash:8]'
   },
@@ -44,10 +48,11 @@ module.exports = {
   devServer: {
     host: '0.0.0.0', // 绑定本机的所有IP地址，让局域网其他人访问你的ip
     port: 3000, // 端口号
+    // publicPath: ROUTER_BASE,
     open: false, // 自动挂起浏览器
     hot: true, // 热加载
     proxy: { // 前端的代理转发设置，通常前端开发环境下和服务端接口联调
-      '/api': { // 接口标识符
+      ['/' + APP_CONTEXT]: { // 接口标识符
         // Proxy target
         target: 'http://localhost:8080', // 后端服务地址
         // Needed for virtual hosted sites
@@ -57,7 +62,15 @@ module.exports = {
     // vue-devtools工具在调试时候可以打开你本地的编辑器对应的文件
     // vue-devtools open .vue file in your editor
     before (app) {
-      app.use('/__open-in-editor', openInEditor())
+      // vue-devtools open .vue file
+      app.use('/__open-in-editor', openInEditor('webstorm'))
+      // Only vue-router history mode setting
+      if (ROUTER_MODE === 'history') {
+        const history = require('connect-history-api-fallback')
+        app.use(history({
+          index: ROUTER_BASE + 'index.html'
+        }))
+      }
     }
   },
   module: {
@@ -140,16 +153,27 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(), // VUE官方推荐必需插件
+    new webpack.DefinePlugin({ // 允许创建一个在编译时可以配置的全局常量, 设置它，就可以忘记开发和发布构建的规则
+      PROD_MODE: prod,
+      ROUTER_BASE: JSON.stringify(ROUTER_BASE),
+      APP_CONTEXT: JSON.stringify(APP_CONTEXT),
+      ROUTER_MODE: JSON.stringify(ROUTER_MODE),
+      UMD_BASE: JSON.stringify(UMD_BASE)
+    }),
     new MiniCssExtractPlugin({ // 将 CSS 样式提取到单独的文件
       filename: prod ? 'styles/[contenthash].css' : '[name].css?[hash:8]'
     }),
     new CleanWebpackPlugin(), // 自动删除output.path 就是通常的'dist'目录
     // Plugin that simplifies creation of HTML files to serve your bundles
     new HtmlWebpackPlugin({ // 对HTML文件的配置，更多配置选参阅百度
-      title: 'vue-webpack4-template', // app的title
-      template: 'public/index.html', //  //生成的新的html文件所依赖的模板
+      template: 'public/index.html', // 生成的新的html文件所依赖的模板
       filename: 'index.html', // 生成的新的html文件的名字
-      meta: { version: version } // html meta 信息
+      title: process.env.npm_package_description, // app的title
+      favicon: 'public/favicon.ico', // 浏览器选项卡小图标
+      meta: {
+        context: APP_CONTEXT,
+        version: process.env.npm_package_version
+      }
     }),
     new CopyWebpackPlugin([{ // 用来拷贝你需要的文件到编译后的根目录下
       from: 'public',
